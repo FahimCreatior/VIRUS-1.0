@@ -1,12 +1,16 @@
 {
-  "name": "nodejs",
+  "name": "telegram-bot-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Telegram bot server for remote device management",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "keywords": ["telegram", "bot", "remote", "management"],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -17,7 +21,7 @@
     "multer": "^1.4.5-lts.1",
     "node-fetch": "^3.2.6",
     "node-telegram-bot-api": "^0.61.0",
-    "uuid": "^9.0.0",
-    "ws": "^8.13.0"
+    "ws": "^8.16.0",
+    "uuid": "^9.0.0"
   }
 }
