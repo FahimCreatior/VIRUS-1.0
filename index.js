@@ -27,10 +27,24 @@ if (process.env.RENDER) {
     console.log('Webhook set to:', webhookUrl);
 }
 
+// Parse JSON bodies for webhook
+app.use(express.json());
+
 // Handle webhook updates
 app.post(`/bot${token}`, (req, res) => {
-    appBot.processUpdate(req.body);
-    res.sendStatus(200);
+    try {
+        // Log the incoming update for debugging
+        console.log('Received update:', JSON.stringify(req.body, null, 2));
+        
+        // Process the update
+        appBot.processUpdate(req.body);
+        
+        // Send a 200 OK response
+        res.status(200).send('OK');
+    } catch (error) {
+        console.error('Error processing update:', error);
+        res.status(500).send('Internal Server Error');
+    }
 });
 const appClients = new Map()
 
